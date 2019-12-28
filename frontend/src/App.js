@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import NavBar from "./NavBar/NavBar";
+import Meals from "./Meals/Meals";
+import SearchBar from "./SearchBar/SearchBar";
 import Callback from "./Callback";
 import { Route } from "react-router-dom";
 
@@ -10,6 +12,8 @@ class App extends Component {
     return (
       <div>
         <NavBar />
+        <SearchBar />
+        <Meals />
         <Route exact path="/callback" component={Callback} />
       </div>
     );

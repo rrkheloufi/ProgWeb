@@ -9,12 +9,12 @@ function NavBar(props) {
   };
 
   return (
-    <nav className="navbar navbar-dark bg-primary fixed-top">
+    <nav className="navbar fixed-top">
       <Link className="navbar-brand" to="/">
         ProgWeb
       </Link>
       {!auth0Client.isAuthenticated() && (
-        <button className="btn btn-dark" onClick={auth0Client.signIn}>
+        <button className="btn btn-light" onClick={auth0Client.signIn}>
           Sign In
         </button>
       )}

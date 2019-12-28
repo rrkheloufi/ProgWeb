@@ -8,7 +8,29 @@ body {
   margin-top: 100px;
 }
 
+.navbar {
+  background-color: indianred;
+}
+
+.navbar-brand {
+  color: aliceblue;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.meal {
+  width: 16rem;
+  height: 20rem;
+  margin-bottom: 10px;
+}
+
+.spinner-grow {
+  margin-left: 50px;
+}
+
+.searchBar {
+  border-color: dodgerblue;
 }

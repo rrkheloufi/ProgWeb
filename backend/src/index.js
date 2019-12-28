@@ -14,8 +14,7 @@ const authClientId = "q618pz2fXtpYgmysdNzG0x9tkr1Ql2JS";
 const app = express();
 
 // the database
-const questions = [];
-
+const meals = [];
 // enhance your app security with Helmet
 app.use(helmet());
 
@@ -28,23 +27,23 @@ app.use(cors());
 // log HTTP requests
 app.use(morgan("combined"));
 
-// retrieve all questions
+// retrieve all meals
 app.get("/", (req, res) => {
-  const qs = questions.map(q => ({
-    id: q.id,
-    title: q.title,
-    description: q.description,
-    answers: q.answers.length
+  const qs = meals.map(meal => ({
+    id: meal.id,
+    title: meal.title,
+    description: meal.description,
+    answers: meal.answers.length
   }));
   res.send(qs);
 });
 
-// get a specific question
+// get a specific meal
 app.get("/:id", (req, res) => {
-  const question = questions.filter(q => q.id === parseInt(req.params.id));
-  if (question.length > 1) return res.status(500).send();
-  if (question.length === 0) return res.status(404).send();
-  res.send(question[0]);
+  const meal = meals.filter(q => q.id === parseInt(req.params.id));
+  if (meal.length > 1) return res.status(500).send();
+  if (meal.length === 0) return res.status(404).send();
+  res.send(meal[0]);
 });
 
 const checkJwt = jwt({
@@ -61,29 +60,29 @@ const checkJwt = jwt({
   algorithms: ["RS256"]
 });
 
-// insert a new question
+// insert a new meal
 app.post("/", checkJwt, (req, res) => {
   const { title, description } = req.body;
-  const newQuestion = {
-    id: questions.length + 1,
+  const newmeal = {
+    id: meals.length + 1,
     title,
     description,
     answers: [],
     author: req.user.name
   };
-  questions.push(newQuestion);
+  meals.push(newmeal);
   res.status(200).send();
 });
 
-// insert a new answer to a question
+// insert a new answer to a meal
 app.post("/answer/:id", checkJwt, (req, res) => {
   const { answer } = req.body;
 
-  const question = questions.filter(q => q.id === parseInt(req.params.id));
-  if (question.length > 1) return res.status(500).send();
-  if (question.length === 0) return res.status(404).send();
+  const meal = meals.filter(q => q.id === parseInt(req.params.id));
+  if (meal.length > 1) return res.status(500).send();
+  if (meal.length === 0) return res.status(404).send();
 
-  question[0].answers.push({
+  meal[0].answers.push({
     answer,
     author: req.user.name
   });
