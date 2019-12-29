@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 
+import SearchBar from "../SearchBar/SearchBar";
+
 class Meals extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +24,7 @@ class Meals extends Component {
   render() {
     return (
       <div className="container">
+        <SearchBar/>
         <div className="row">
           {this.state.meals === null && (
             <div className="spinners">

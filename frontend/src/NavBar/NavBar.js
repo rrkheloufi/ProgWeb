@@ -11,7 +11,7 @@ function NavBar(props) {
   return (
     <nav className="navbar fixed-top">
       <Link className="navbar-brand" to="/">
-        ProgWeb
+        PinMeal
       </Link>
       {!auth0Client.isAuthenticated() && (
         <button className="btn btn-light" onClick={auth0Client.signIn}>

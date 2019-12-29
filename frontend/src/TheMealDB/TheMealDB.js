@@ -21,3 +21,34 @@ export async function getRandomMeals(numberOfMeals) {
   }
   return meals;
 }
+
+export async function getMealById(mealId) {
+  let meal = (await axios.get("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + mealId)).data["meals"][0];
+
+  let ingredientsArr = [];
+  for (let index = 1; index <= 20; index++) {
+    let ingredientProp = "strIngredient" + index;
+    let quantityProp = "strMeasure" + index;
+    let name = meal[ingredientProp];
+    let quantity = meal[quantityProp];
+    if (name !== "") {
+      let ingredientObj = {
+        ingredient: name,
+        quantity: quantity
+      };
+      ingredientsArr.push(ingredientObj);
+    }
+  }
+
+  return {
+    strMeal: meal.strMeal,
+    strInstructions: meal.strInstructions,
+    strMealThumb: meal.strMealThumb,
+    strTags: meal.strTags,
+    strYoutube: meal.strYoutube,
+    strCategory: meal.strCategory,
+    strArea: meal.strArea,
+    strSource: meal.strSource,
+    ingredients: ingredientsArr
+  };
+}
