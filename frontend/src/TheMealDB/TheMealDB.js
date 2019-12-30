@@ -52,3 +52,20 @@ export async function getMealById(mealId) {
     ingredients: ingredientsArr
   };
 }
+
+export async function getCategories() {
+  let cat = (await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?c=list")).data["meals"];
+  return cat;
+}
+
+export async function getAreas() {
+  let areas = (await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?a=list")).data["meals"];
+  console.log("Areas in db " + areas);
+  return areas;
+}
+
+export async function getIngredients() {
+  let ingredients = (await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")).data["meals"];
+  return ingredients;
+}
+

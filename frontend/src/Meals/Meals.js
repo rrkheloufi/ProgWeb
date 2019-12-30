@@ -15,7 +15,7 @@ class Meals extends Component {
 
   async componentDidMount() {
     let meals = await TheMealDb.getRandomMeals(16);
-
+   
     this.setState({
       meals
     });
