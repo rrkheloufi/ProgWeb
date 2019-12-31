@@ -60,7 +60,6 @@ export async function getCategories() {
 
 export async function getAreas() {
   let areas = (await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?a=list")).data["meals"];
-  console.log("Areas in db " + areas);
   return areas;
 }
 
@@ -69,3 +68,44 @@ export async function getIngredients() {
   return ingredients;
 }
 
+
+function intersectArrays(arrayOne, arrayTwo) {
+  if (arrayOne.length === 0)
+    return arrayTwo;
+  else if (arrayTwo.length === 0)
+    return arrayOne;
+  let results = [];
+  arrayOne.map(function (item1) {
+    arrayTwo.map(function (item2) {
+      if (item1.idMeal === item2.idMeal) {
+        results.push(item1);
+      }
+    })
+  })
+  return results;
+}
+
+async function getFilterResults(filter, prefix) {
+  let result = [];
+  for (let i = 0; i < filter.length; i++) {
+    let temp = (await axios.get("https://www.themealdb.com/api/json/v1/1/filter.php?" + prefix + "=" + filter[i])).data["meals"];
+    if (temp)
+      result = result.concat(temp);
+  }
+  return result;
+}
+//
+
+export async function getFilteredMeals(categories, areas, ingredients, name) {
+  let catResults = await getFilterResults(categories, "c");
+  let areaResults = await getFilterResults(areas, "a");
+  let ingResults = await getFilterResults(ingredients, "i");
+  let nameResults = [];
+  if (name !== "")
+    nameResults = (await axios.get("https://www.themealdb.com/api/json/v1/1/search.php?s=" + name)).data["meals"];
+
+  let interRes = intersectArrays(nameResults, catResults);
+  interRes = intersectArrays(interRes, areaResults);
+  interRes = intersectArrays(interRes, ingResults);
+  return interRes;
+}

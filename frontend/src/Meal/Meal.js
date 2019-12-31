@@ -31,16 +31,17 @@ class Meal extends Component {
                 <h1 className="my-4">{meal.strMeal}
                 </h1>
                 <div className="row">
-                    <div class="card mb-3 meal-info">
-                        <div class="row no-gutters">
-                            <div class="col-md-3">
-                                <img src={meal.strMealThumb} class="card-img" alt="..." />
+                    <div className="card mb-3 meal-info">
+                        <div className="row no-gutters">
+                            <div className="col-md-3">
+                                <img src={meal.strMealThumb} className="card-img" alt="..." />
                             </div>
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <table class="table">
+                            <div className="col-md-9">
+                                <div className="card-body">
+                                    <table className="table">
                                         <tbody>
-                                            <tr>                                                <th scope="row">Category</th>
+                                            <tr>
+                                                <th scope="row">Category</th>
                                                 <td>{meal.strCategory}</td>
                                             </tr>
                                             <tr>
@@ -68,8 +69,8 @@ class Meal extends Component {
                 </div>
                 <h3 className="my-4">Ingredients</h3>
                 <div className="row">
-                    {this.state.meal.ingredients.map(ingredient => (
-                        <div className="col-md-2 col-sm-4 mb-4">
+                    {this.state.meal.ingredients.map(ingredient => ingredient.ingredient && (
+                        <div key={ingredient.ingredient} className="col-md-2 col-sm-4 mb-4">
                             <div className="card ingredient">
                                 <div className="card-header">{ingredient.ingredient}</div>
                                 <div className="card-body">
@@ -91,8 +92,6 @@ class Meal extends Component {
                         })}
                     </ul>
                 </div>
-
-
             </div >
         )
 

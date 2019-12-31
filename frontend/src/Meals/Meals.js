@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 
-import SearchBar from "../SearchBar/SearchBar";
+import SearchBar from "../Search/Search";
 
 class Meals extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class Meals extends Component {
 
   async componentDidMount() {
     let meals = await TheMealDb.getRandomMeals(16);
-   
+
     this.setState({
       meals
     });
@@ -24,7 +24,7 @@ class Meals extends Component {
   render() {
     return (
       <div className="container">
-        <SearchBar/>
+        <SearchBar />
         <div className="row">
           {this.state.meals === null && (
             <div className="spinners">
