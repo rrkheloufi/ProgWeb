@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
-import Select from 'react-select';
+import Select from "react-select";
 import { Link } from "react-router-dom";
-import makeAnimated from 'react-select/animated';
+import makeAnimated from "react-select/animated";
+import * as DisplayMealUtils from "../Meal/displayMealUtils";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class SearchBar extends Component {
       ingredients: null,
       meals: null
     };
-    this.cancel = '';
+    this.cancel = "";
     this.categoryFilter = [];
     this.areaFilter = [];
     this.ingrFilter = [];
@@ -38,7 +39,6 @@ class SearchBar extends Component {
       ingredients,
       meals
     });
-
   }
 
   fetchSearchResults() {
@@ -49,21 +49,27 @@ class SearchBar extends Component {
 
     console.log("name filter : " + nameFilter);
 
-    TheMealDb.getFilteredMeals(catFilter, areaFilter, ingrFilter, nameFilter).then(res => {
-      if (catFilter.length === 0 && areaFilter.length === 0 && ingrFilter.length === 0 && nameFilter === "")
+    TheMealDb.getFilteredMeals(
+      catFilter,
+      areaFilter,
+      ingrFilter,
+      nameFilter
+    ).then(res => {
+      if (
+        catFilter.length === 0 &&
+        areaFilter.length === 0 &&
+        ingrFilter.length === 0 &&
+        nameFilter === ""
+      )
         this.setState({ meals: this.defaultMeals });
-      else
-        this.setState({ meals: res })
+      else this.setState({ meals: res });
     });
   }
 
   setFilter(filterName, options) {
-    if (filterName === "category")
-      this.categoryFilter = options;
-    else if (filterName === "area")
-      this.areaFilter = options;
-    else if (filterName === "ingredients")
-      this.ingrFilter = options;
+    if (filterName === "category") this.categoryFilter = options;
+    else if (filterName === "area") this.areaFilter = options;
+    else if (filterName === "ingredients") this.ingrFilter = options;
   }
 
   handleChange(e, prop) {
@@ -77,30 +83,33 @@ class SearchBar extends Component {
     this.setFilter(prop, selected);
     this.setState({ results: {} }, () => {
       this.fetchSearchResults();
-    })
+    });
   }
 
   handleName(e) {
     let name = e.target.value;
     this.nameFilter = name;
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       this.nameFilter = name;
       this.setState({ results: {} }, () => {
         this.fetchSearchResults();
-      })
+      });
     }
   }
 
   handleClick() {
     this.setState({ results: {} }, () => {
       this.fetchSearchResults();
-    })
+    });
   }
 
   createSelectItems(categories, optionProp) {
     let items = [];
     for (let i = 0; i < categories.length; i++) {
-      items.push({ value: categories[i][optionProp], label: categories[i][optionProp] });
+      items.push({
+        value: categories[i][optionProp],
+        label: categories[i][optionProp]
+      });
     }
     return items;
   }
@@ -116,30 +125,9 @@ class SearchBar extends Component {
     return (
       <div className="container">
         <div className="row">
-          {this.state.meals === null && (
-            <div className="spinners">
-              <div className="spinner-grow text-primary" role="status" />
-              <div className="spinner-grow text-primary" role="status" />
-              <div className="spinner-grow text-primary" role="status" />
-            </div>
-          )}
+          {this.state.meals === null && DisplayMealUtils.displayLoadingDots()}
           {this.state.meals &&
-            this.state.meals.map(meal => (
-              <div key={meal.idMeal} className="col-sm-12 col-md-4 col-lg-3">
-                <Link to={`/meal/${meal.idMeal}`}>
-                  <div className="card meal">
-                    <img
-                      src={meal.strMealThumb}
-                      className="card-img-top"
-                      alt="..."
-                    />
-                    <div className="card-body">
-                      <p className="card-title">{meal.strMeal}</p>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
+            DisplayMealUtils.displayMealsThumbnail(this.state.meals)}
         </div>
       </div>
     );
@@ -214,8 +202,8 @@ class SearchBar extends Component {
               />
             </div>
           </div>
-
         </div>
+        {this.state.meals == null && DisplayMealUtils.displayLoadingDots()}
         {this.state.meals && this.renderResults()}
       </div>
     );

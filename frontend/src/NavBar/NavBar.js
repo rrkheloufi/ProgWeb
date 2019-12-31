@@ -14,9 +14,14 @@ function NavBar(props) {
         PinMeal
       </Link>
       {!auth0Client.isAuthenticated() && (
-        <button className="btn btn-light" onClick={auth0Client.signIn}>
-          Sign In
-        </button>
+        <div>
+          <Link className="btn btn-info boxesButton" to="/boxes">
+            Boxes
+          </Link>
+          <button className="btn btn-light" onClick={auth0Client.signIn}>
+            Sign In
+          </button>
+        </div>
       )}
       {auth0Client.isAuthenticated() && (
         <div>

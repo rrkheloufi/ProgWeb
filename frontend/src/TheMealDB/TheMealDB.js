@@ -23,7 +23,11 @@ export async function getRandomMeals(numberOfMeals) {
 }
 
 export async function getMealById(mealId) {
-  let meal = (await axios.get("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + mealId)).data["meals"][0];
+  let meal = (
+    await axios.get(
+      "https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + mealId
+    )
+  ).data["meals"][0];
 
   let ingredientsArr = [];
   for (let index = 1; index <= 20; index++) {
@@ -41,6 +45,7 @@ export async function getMealById(mealId) {
   }
 
   return {
+    idMeal: meal.idMeal,
     strMeal: meal.strMeal,
     strInstructions: meal.strInstructions,
     strMealThumb: meal.strMealThumb,
@@ -53,44 +58,63 @@ export async function getMealById(mealId) {
   };
 }
 
+export async function getMealsByIds(mealIds) {
+  let mealArray = [];
+  for (let i = 0; i < mealIds.length; i++) {
+    let id = mealIds[i];
+    let meal = await getMealById(id);
+    mealArray.push(meal);
+  }
+  return mealArray;
+}
+
 export async function getCategories() {
-  let cat = (await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?c=list")).data["meals"];
+  let cat = (
+    await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?c=list")
+  ).data["meals"];
   return cat;
 }
 
 export async function getAreas() {
-  let areas = (await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?a=list")).data["meals"];
+  let areas = (
+    await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?a=list")
+  ).data["meals"];
   return areas;
 }
 
 export async function getIngredients() {
-  let ingredients = (await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")).data["meals"];
+  let ingredients = (
+    await axios.get("https://www.themealdb.com/api/json/v1/1/list.php?i=list")
+  ).data["meals"];
   return ingredients;
 }
 
-
 function intersectArrays(arrayOne, arrayTwo) {
-  if (arrayOne.length === 0)
-    return arrayTwo;
-  else if (arrayTwo.length === 0)
-    return arrayOne;
+  if (arrayOne.length === 0) return arrayTwo;
+  else if (arrayTwo.length === 0) return arrayOne;
   let results = [];
-  arrayOne.map(function (item1) {
-    arrayTwo.map(function (item2) {
+  arrayOne.map(function(item1) {
+    arrayTwo.map(function(item2) {
       if (item1.idMeal === item2.idMeal) {
         results.push(item1);
       }
-    })
-  })
+    });
+  });
   return results;
 }
 
 async function getFilterResults(filter, prefix) {
   let result = [];
   for (let i = 0; i < filter.length; i++) {
-    let temp = (await axios.get("https://www.themealdb.com/api/json/v1/1/filter.php?" + prefix + "=" + filter[i])).data["meals"];
-    if (temp)
-      result = result.concat(temp);
+    let temp = (
+      await axios.get(
+        "https://www.themealdb.com/api/json/v1/1/filter.php?" +
+          prefix +
+          "=" +
+          filter[i]
+      )
+    ).data["meals"];
+    if (temp) result = result.concat(temp);
   }
   return result;
 }
@@ -102,7 +126,11 @@ export async function getFilteredMeals(categories, areas, ingredients, name) {
   let ingResults = await getFilterResults(ingredients, "i");
   let nameResults = [];
   if (name !== "")
-    nameResults = (await axios.get("https://www.themealdb.com/api/json/v1/1/search.php?s=" + name)).data["meals"];
+    nameResults = (
+      await axios.get(
+        "https://www.themealdb.com/api/json/v1/1/search.php?s=" + name
+      )
+    ).data["meals"];
 
   let interRes = intersectArrays(nameResults, catResults);
   interRes = intersectArrays(interRes, areaResults);
