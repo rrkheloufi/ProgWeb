@@ -37,7 +37,7 @@ class CreateBox extends Component {
       {
         name: this.state.boxName,
         ownerEmail: this.state.ownerEmail,
-        mealsIds: [52918, 52846, 52795],
+        mealsIds: [],
         description: this.state.description
       } /*,
       {

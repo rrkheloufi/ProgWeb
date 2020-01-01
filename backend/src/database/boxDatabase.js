@@ -27,25 +27,6 @@ db.once("open", _ => {
   console.log("Database connected:", url);
 });
 
-async function getBoxesOfUser(email) {
-  Box.find({ ownerEmail: email }).then(boxes => {
-    console.log(boxes);
-    return boxes;
-  });
-}
-
-async function getAllBoxes() {
-  Box.find(function(err, boxes) {
-    if (err) return console.error(err);
-    console.log(boxes);
-  }).then(boxes => {
-    console.log(boxes);
-    return boxes;
-  });
-}
-
-//insertNewBox("Box", "owner3@gmail.com", [1, 5]);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -84,6 +65,7 @@ app.put("/box/:id", async (request, response) => {
   try {
     var box = await Box.findById(request.params.id).exec();
     box.set(request.body);
+    console.log(box);
     var result = await box.save();
     response.send(result);
   } catch (error) {

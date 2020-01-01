@@ -54,6 +54,29 @@ code {
   margin-right: 10px;
 }
 
+.addInBoxButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  visibility: hidden;
+}
+
+.meal:hover .addInBoxButton {
+  visibility: visible;
+}
+
+.btn-circle.btn-xl {
+  border-radius: 35px;
+  line-height: 1.33;
+}
+
+.btn-circle {
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
+}
+
 .spinner-grow {
   margin-left: 50px;
 }

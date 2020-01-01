@@ -27,7 +27,6 @@ class Box extends Component {
 
   render() {
     const { box, meals } = this.state;
-    console.log(meals);
     if (box === null) return DisplayMealUtils.displayLoadingDots();
     return (
       <div className="container">
@@ -38,7 +37,8 @@ class Box extends Component {
           <div className="container">
             <div className="row">
               {meals === null && DisplayMealUtils.displayLoadingDots()}
-              {meals && DisplayMealUtils.displayMealsThumbnail(meals)}
+              {meals &&
+                DisplayMealUtils.displayMealsThumbnail(meals, null, true, box)}
             </div>
           </div>
         </div>

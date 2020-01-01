@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 
 class Meal extends Component {

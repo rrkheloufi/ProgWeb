@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 import Select from "react-select";
-import { Link } from "react-router-dom";
 import makeAnimated from "react-select/animated";
 import * as DisplayMealUtils from "../Meal/displayMealUtils";
+import axios from "axios";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -13,7 +13,8 @@ class SearchBar extends Component {
       categories: null,
       areas: null,
       ingredients: null,
-      meals: null
+      meals: null,
+      boxes: null
     };
     this.cancel = "";
     this.categoryFilter = [];
@@ -32,12 +33,20 @@ class SearchBar extends Component {
     let ingredients = await TheMealDb.getIngredients();
     let meals = await TheMealDb.getRandomMeals(16);
     this.defaultMeals = meals;
+    const boxes = (
+      await axios.get(`http://localhost:8081/boxes`, {
+        params: {
+          ownerEmail: "ownerTest@gmail.com" //TODO : pass here the email of the user
+        }
+      })
+    ).data;
 
     this.setState({
       categories,
       areas,
       ingredients,
-      meals
+      meals,
+      boxes
     });
   }
 
@@ -127,7 +136,12 @@ class SearchBar extends Component {
         <div className="row">
           {this.state.meals === null && DisplayMealUtils.displayLoadingDots()}
           {this.state.meals &&
-            DisplayMealUtils.displayMealsThumbnail(this.state.meals)}
+            DisplayMealUtils.displayMealsThumbnail(
+              this.state.meals,
+              this.state.boxes,
+              false,
+              null
+            )}
         </div>
       </div>
     );
