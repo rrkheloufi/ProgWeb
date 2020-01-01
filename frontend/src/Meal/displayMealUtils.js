@@ -61,7 +61,7 @@ function AddInBoxModal(props) {
         onClick={() => {
           if (props.displayBoxPageThumbnail === true) {
             BoxDB.removeMealFromBox(props.box, props.mealId);
-            document.location.reload();
+            document.getElementById(props.mealId).remove();
           } else {
             setSmShow(true);
           }
