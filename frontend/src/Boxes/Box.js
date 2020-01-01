@@ -18,6 +18,7 @@ class Box extends Component {
     } = this.props;
     const box = (await axios.get(`http://localhost:8081/box/${params.id}`))
       .data;
+    console.log(box);
     const meals = await TheMealDb.getMealsByIds(box.mealsIds);
     this.setState({
       box,

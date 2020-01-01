@@ -61,7 +61,7 @@ code {
   visibility: hidden;
 }
 
-.meal:hover .addInBoxButton {
+.showAddBoxButton:hover .addInBoxButton {
   visibility: visible;
 }
 

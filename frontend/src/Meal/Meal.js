@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
+import { AddInBoxModal } from "../Meal/displayMealUtils";
+import axios from "axios";
 
 class Meal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      meal: null
+      meal: null,
+      boxes: null
     };
   }
 
@@ -14,13 +17,21 @@ class Meal extends Component {
       match: { params }
     } = this.props;
     let meal = await TheMealDb.getMealById(params.mealId);
+    const boxes = (
+      await axios.get(`http://localhost:8081/boxes`, {
+        params: {
+          ownerEmail: "ownerTest@gmail.com" //TODO : pass here the email of the user
+        }
+      })
+    ).data;
     this.setState({
-      meal
+      meal,
+      boxes
     });
   }
 
   render() {
-    const { meal } = this.state;
+    const { meal, boxes } = this.state;
     if (meal === null)
       return (
         <div className="spinners">
@@ -30,8 +41,9 @@ class Meal extends Component {
         </div>
       );
     return (
-      <div className="container">
+      <div className="container showAddBoxButton">
         <h1 className="my-4">{meal.strMeal}</h1>
+
         <div className="row">
           <div className="card mb-3 meal-info">
             <div className="row no-gutters">
@@ -39,6 +51,12 @@ class Meal extends Component {
                 <img src={meal.strMealThumb} className="card-img" alt="..." />
               </div>
               <div className="col-md-9">
+                <AddInBoxModal
+                  boxes={boxes}
+                  mealId={meal.idMeal}
+                  displayBoxPageThumbnail={false}
+                  box={null}
+                />
                 <div className="card-body">
                   <table className="table">
                     <tbody>

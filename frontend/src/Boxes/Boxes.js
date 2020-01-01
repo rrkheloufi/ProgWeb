@@ -25,7 +25,7 @@ class box extends Component {
     });
   }
 
-  confirmSuppression(id, name) {
+  confirmSuppression(boxId, name) {
     confirmAlert({
       title: "Confirmation.",
       message: "Are you sure you want to delete the " + name + " box ?",
@@ -33,8 +33,9 @@ class box extends Component {
         {
           label: "Yes",
           onClick: () => {
-            axios.delete(`http://localhost:8081/box/${id}`);
+            axios.delete(`http://localhost:8081/box/${boxId}`);
             this.props.history.push("/boxes");
+            document.getElementById(boxId).remove(true);
           }
         },
         {
@@ -52,7 +53,11 @@ class box extends Component {
           {this.state.boxes === null && <p>Loading boxes...</p>}
           {this.state.boxes &&
             this.state.boxes.map(box => (
-              <div key={box._id} className="col-sm-12 col-md-4 col-lg-3">
+              <div
+                key={box._id}
+                id={box._id}
+                className="col-sm-12 col-md-4 col-lg-3"
+              >
                 <Link to={`/box/${box._id}`}>
                   <div className="card mb-3 boxCard">
                     <div className="card-header">

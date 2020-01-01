@@ -12,8 +12,12 @@ export function displayMealThumbnail(
   box
 ) {
   return (
-    <div key={meal.idMeal} className="col-sm-12 col-md-4 col-lg-3">
-      <div id={meal.idMeal} className="card meal w-100">
+    <div
+      key={meal.idMeal}
+      id={meal.idMeal}
+      className="col-sm-12 col-md-4 col-lg-3"
+    >
+      <div className="card meal w-100 showAddBoxButton">
         <AddInBoxModal
           boxes={boxes}
           mealId={parseInt(meal.idMeal)}
@@ -52,7 +56,7 @@ export function displayLoadingDots() {
   );
 }
 
-function AddInBoxModal(props) {
+export function AddInBoxModal(props) {
   const [smShow, setSmShow] = useState(false);
   return (
     <ButtonToolbar>
