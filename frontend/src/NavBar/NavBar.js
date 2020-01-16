@@ -36,6 +36,9 @@ function NavBar(props) {
           >
             Sign Out
           </button>
+          <Link className="btn btn-info boxesButton" to="/boxes">
+            Boxes
+          </Link>
         </div>
       )}
     </nav>
