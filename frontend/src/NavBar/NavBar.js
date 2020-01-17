@@ -15,9 +15,6 @@ function NavBar(props) {
       </Link>
       {!auth0Client.isAuthenticated() && (
         <div>
-          <Link className="btn btn-info boxesButton" to="/boxes">
-            Boxes
-          </Link>
           <button className="btn btn-light" onClick={auth0Client.signIn}>
             Sign In
           </button>
@@ -28,6 +25,9 @@ function NavBar(props) {
           <label className="mr-2 text-white">
             {auth0Client.getProfile().name}
           </label>
+          <Link className="btn boxesButton" to="/boxes">
+            Boxes
+          </Link>
           <button
             className="btn btn-dark"
             onClick={() => {
@@ -36,9 +36,6 @@ function NavBar(props) {
           >
             Sign Out
           </button>
-          <Link className="btn btn-info boxesButton" to="/boxes">
-            Boxes
-          </Link>
         </div>
       )}
     </nav>

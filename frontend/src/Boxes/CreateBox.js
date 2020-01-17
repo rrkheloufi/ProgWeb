@@ -2,15 +2,17 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 //import auth0Client from "../Auth";
 import axios from "axios";
+import auth0Client from "../Auth";
 
 class CreateBox extends Component {
   constructor(props) {
     super(props);
+    let userEmail = auth0Client.getProfile().email;
 
     this.state = {
       disabled: false,
       boxName: "",
-      ownerEmail: "ownerTest@gmail.com",
+      ownerEmail: userEmail,
       description: null
     };
   }

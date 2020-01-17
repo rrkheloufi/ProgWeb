@@ -22,8 +22,6 @@ code {
 }
 
 .meal {
-  width: 16rem;
-  height: 20rem;
   margin-bottom: 10px;
   transition: box-shadow 0.3s;
 }
@@ -35,6 +33,8 @@ code {
 
 .boxCard {
   transition: box-shadow 0.3s;
+  background-color: #ffeedb;
+  color: black;
 }
 
 .boxCard:hover {
@@ -42,7 +42,7 @@ code {
 }
 
 .boxJumbotron {
-  background: rgba(168, 236, 168, 0.473);
+  background: #fcd7ad;
   transition: box-shadow 0.3s;
 }
 
@@ -52,6 +52,13 @@ code {
 
 .boxesButton {
   margin-right: 10px;
+  background-color: #74121d;
+  color: white;
+}
+
+.buttonUpdateBox {
+  margin-left: 20px;
+  background-color: #ed9b40;
 }
 
 .addInBoxButton {

@@ -4,6 +4,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import * as DisplayMealUtils from "../Meal/displayMealUtils";
 import axios from "axios";
+import auth0Client from "../Auth";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -33,14 +34,17 @@ class SearchBar extends Component {
     let ingredients = await TheMealDb.getIngredients();
     let meals = await TheMealDb.getRandomMeals(16);
     this.defaultMeals = meals;
-    const boxes = (
-      await axios.get(`http://localhost:8081/boxes`, {
-        params: {
-          ownerEmail: "ownerTest@gmail.com" //TODO : pass here the email of the user
-        }
-      })
-    ).data;
-
+    let boxes = [];
+    if (auth0Client.isAuthenticated()) {
+      let userEmail = auth0Client.getProfile().email;
+      boxes = (
+        await axios.get(`http://localhost:8081/boxes`, {
+          params: {
+            ownerEmail: userEmail //TODO : pass here the email of the user
+          }
+        })
+      ).data;
+    }
     this.setState({
       categories,
       areas,
@@ -55,8 +59,6 @@ class SearchBar extends Component {
     const areaFilter = this.areaFilter;
     const ingrFilter = this.ingrFilter;
     const nameFilter = this.nameFilter;
-
-    console.log("name filter : " + nameFilter);
 
     TheMealDb.getFilteredMeals(
       catFilter,

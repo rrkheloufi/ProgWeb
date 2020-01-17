@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import auth0Client from "../Auth";
 
 class box extends Component {
   constructor(props) {
@@ -13,10 +14,11 @@ class box extends Component {
   }
 
   async componentDidMount() {
+    let userEmail = auth0Client.getProfile().email;
     const boxes = (
       await axios.get(`http://localhost:8081/boxes`, {
         params: {
-          ownerEmail: "ownerTest@gmail.com" //TODO : pass here the email of the user
+          ownerEmail: userEmail
         }
       })
     ).data;

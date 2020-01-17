@@ -32,7 +32,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post("/box", async (request, response) => {
   try {
-    //console.log(request.body);
     var box = new Box(request.body);
     var result = await box.save();
     response.send(result);
@@ -65,7 +64,6 @@ app.put("/box/:id", async (request, response) => {
   try {
     var box = await Box.findById(request.params.id).exec();
     box.set(request.body);
-    console.log(box);
     var result = await box.save();
     response.send(result);
   } catch (error) {

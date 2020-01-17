@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 import { AddInBoxModal } from "../Meal/displayMealUtils";
 import axios from "axios";
+import auth0Client from "../Auth";
 
 class Meal extends Component {
   constructor(props) {
@@ -17,13 +18,18 @@ class Meal extends Component {
       match: { params }
     } = this.props;
     let meal = await TheMealDb.getMealById(params.mealId);
-    const boxes = (
-      await axios.get(`http://localhost:8081/boxes`, {
-        params: {
-          ownerEmail: "ownerTest@gmail.com" //TODO : pass here the email of the user
-        }
-      })
-    ).data;
+    let boxes = [];
+    if (auth0Client.isAuthenticated()) {
+      let userEmail = auth0Client.getProfile().email;
+
+      boxes = (
+        await axios.get(`http://localhost:8081/boxes`, {
+          params: {
+            ownerEmail: userEmail //TODO : pass here the email of the user
+          }
+        })
+      ).data;
+    }
     this.setState({
       meal,
       boxes
@@ -51,12 +57,14 @@ class Meal extends Component {
                 <img src={meal.strMealThumb} className="card-img" alt="..." />
               </div>
               <div className="col-md-9">
-                <AddInBoxModal
-                  boxes={boxes}
-                  mealId={meal.idMeal}
-                  displayBoxPageThumbnail={false}
-                  box={null}
-                />
+                {auth0Client.isAuthenticated() && (
+                  <AddInBoxModal
+                    boxes={boxes}
+                    mealId={meal.idMeal}
+                    displayBoxPageThumbnail={false}
+                    box={null}
+                  />
+                )}
                 <div className="card-body">
                   <table className="table">
                     <tbody>

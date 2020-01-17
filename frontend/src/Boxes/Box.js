@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import axios from "axios";
 
 import { Link } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 import * as DisplayMealUtils from "../Meal/displayMealUtils";
@@ -25,8 +23,7 @@ class Box extends Component {
     } = this.props;
     const box = (await axios.get(`http://localhost:8081/box/${params.id}`))
       .data;
-    const id = params.id
-    console.log(box);
+    const id = params.id;
     const meals = await TheMealDb.getMealsByIds(box.mealsIds);
     this.setState({
       box,
@@ -62,11 +59,12 @@ class Box extends Component {
     return (
       <div className="container">
         <div className="jumbotron boxJumbotron col-12">
-          <h1 className="my-2">{box.name}
-          <Link to={`/boxes/update/${box._id}`}>
-            <button className="btn btn-danger btn-circle btn-xl">
+          <h1 className="my-2">
+            {box.name}
+            <Link to={`/boxes/update/${box._id}`}>
+              <button className="btn btn-circle btn-xl buttonUpdateBox">
                 <i className="fa fa-pencil" aria-hidden="true"></i>
-            </button>
+              </button>
             </Link>
           </h1>
           <p className="lead">{box.description}</p>

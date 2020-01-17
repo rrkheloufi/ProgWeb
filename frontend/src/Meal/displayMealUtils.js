@@ -4,11 +4,12 @@ import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import Modal from "react-bootstrap/Modal";
 import { Link } from "react-router-dom";
 import * as BoxDB from "../Boxes/boxDbUtils";
+import auth0Client from "../Auth";
 
 export function displayMealThumbnail(
   meal,
   boxes,
-  displayBoxPageThumbnail,
+  displayboxpagethumbnail,
   box
 ) {
   return (
@@ -17,13 +18,15 @@ export function displayMealThumbnail(
       id={meal.idMeal}
       className="col-sm-12 col-md-4 col-lg-3"
     >
-      <div className="card meal w-100 showAddBoxButton">
-        <AddInBoxModal
-          boxes={boxes}
-          mealId={parseInt(meal.idMeal)}
-          displayBoxPageThumbnail={displayBoxPageThumbnail}
-          box={box}
-        />
+      <div className="card meal showAddBoxButton">
+        {auth0Client.isAuthenticated() && (
+          <AddInBoxModal
+            boxes={boxes}
+            mealId={parseInt(meal.idMeal)}
+            displayboxpagethumbnail={displayboxpagethumbnail}
+            box={box}
+          />
+        )}
         <Link to={`/meal/${meal.idMeal}`}>
           <img src={meal.strMealThumb} className="card-img-top" alt="..." />
         </Link>
@@ -38,11 +41,11 @@ export function displayMealThumbnail(
 export function displayMealsThumbnail(
   meals,
   boxes,
-  displayBoxPageThumbnail,
+  displayboxpagethumbnail,
   box
 ) {
   return meals.map(meal => {
-    return this.displayMealThumbnail(meal, boxes, displayBoxPageThumbnail, box);
+    return this.displayMealThumbnail(meal, boxes, displayboxpagethumbnail, box);
   });
 }
 
@@ -63,7 +66,7 @@ export function AddInBoxModal(props) {
       <Button
         type="button"
         onClick={() => {
-          if (props.displayBoxPageThumbnail === true) {
+          if (props.displayboxpagethumbnail === true) {
             BoxDB.removeMealFromBox(props.box, props.mealId);
             document.getElementById(props.mealId).remove();
           } else {
@@ -72,21 +75,25 @@ export function AddInBoxModal(props) {
         }}
         className="btn btn-danger btn-circle btn-xl addInBoxButton"
       >
-        {props.displayBoxPageThumbnail === true && (
+        {props.displayboxpagethumbnail === true && (
           <i className="fa fa-trash" aria-hidden="true"></i>
         )}
-        {props.displayBoxPageThumbnail === false && (
+        {props.displayboxpagethumbnail === false && (
           <i className="fa fa-plus" aria-hidden="true"></i>
         )}
       </Button>
       <Modal
+        {...props}
         size="sm"
         show={smShow}
         onHide={() => setSmShow(false)}
-        aria-labelledby="example-modal-sizes-title-sm"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id="example-modal-sizes-title-sm">Boxes</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Modal heading
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ul className="list-group">
@@ -100,6 +107,7 @@ export function AddInBoxModal(props) {
 }
 
 function boxListItem(box, mealId) {
+  mealId = parseInt(mealId);
   if (box.mealsIds.includes(mealId)) {
     return (
       <button

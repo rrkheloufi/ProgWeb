@@ -2,15 +2,17 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 //import auth0Client from "../Auth";
 import axios from "axios";
+import auth0Client from "../Auth";
 
 class CreateBox extends Component {
   constructor(props) {
     super(props);
+    let userEmail = auth0Client.getProfile().email;
 
     this.state = {
       disabled: false,
       boxName: "",
-      ownerEmail: "ownerTest@gmail.com",
+      ownerEmail: userEmail,
       description: null,
       _id: null
     };
@@ -25,11 +27,11 @@ class CreateBox extends Component {
     const _id = box._id;
     const boxName = box.name;
     const description = box.description;
-    
+
     this.setState({
-        boxName,
-        description,
-        _id
+      boxName,
+      description,
+      _id
     });
   }
 
@@ -51,7 +53,7 @@ class CreateBox extends Component {
     });
 
     await axios.put(
-      "http://localhost:8081/box/"  + this.state._id,
+      "http://localhost:8081/box/" + this.state._id,
       {
         name: this.state.boxName,
         description: this.state.description
