@@ -61,6 +61,15 @@ code {
   background-color: #ed9b40;
 }
 
+.boxThumbnail {
+  margin-bottom: 1%;
+  padding: 1%;
+}
+
+.thumbnailContainer {
+  padding: 5px;
+}
+
 .addInBoxButton {
   position: absolute;
   top: 5px;
