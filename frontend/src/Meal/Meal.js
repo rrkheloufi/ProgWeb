@@ -1,16 +1,22 @@
 import React, { Component } from "react";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
-import { AddInBoxModal } from "../Meal/displayMealUtils";
+import { AddInBoxModal, AddComment } from "../Meal/displayMealUtils";
+import Comments from "../Meal/Comments";
 import axios from "axios";
 import auth0Client from "../Auth";
 
 class Meal extends Component {
   constructor(props) {
     super(props);
+    const {
+      match: { params }
+    } = this.props;
     this.state = {
       meal: null,
       boxes: null
     };
+    this.rating = 5;
+    this.mealId = params.mealId;
   }
 
   async componentDidMount() {
@@ -21,7 +27,6 @@ class Meal extends Component {
     let boxes = [];
     if (auth0Client.isAuthenticated()) {
       let userEmail = auth0Client.getProfile().email;
-
       boxes = (
         await axios.get(`http://localhost:8081/boxes`, {
           params: {
@@ -30,14 +35,27 @@ class Meal extends Component {
         })
       ).data;
     }
+   // let comments = (await axios.get(`http://localhost:8081/comments/` + params.mealId)).data;
+   // let mealStats = (await axios.get(`http://localhost:8081/mealStats/` + params.mealId)).data;
+
     this.setState({
       meal,
       boxes
     });
   }
 
+  renderStars(nbOfStars) {
+    let elements = [];
+    for (let i = 0; i < 5 - nbOfStars; i++)
+      elements.push(<span className="float-right"><i className="text-warning fa fa-star-o"></i></span>);
+    for (let i = 0; i < nbOfStars; i++)
+      elements.push(<span className="float-right"><i className="text-warning fa fa-star"></i></span>);
+    return elements;
+  }
+
+
   render() {
-    const { meal, boxes } = this.state;
+    const { meal, boxes, comments, mealStats } = this.state;
     if (meal === null)
       return (
         <div className="spinners">
@@ -141,6 +159,7 @@ class Meal extends Component {
             })}
           </ul>
         </div>
+       <Comments mealId = {this.mealId}/>
       </div>
     );
   }
