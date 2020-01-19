@@ -73,7 +73,7 @@ class Boxes extends Component {
       <div>
         <input
           type="search"
-          placeholder="What boxes do you which to find?"
+          placeholder="Search other user's boxes by name..."
           aria-describedby="button-addon6"
           className="form-control searchBar searchBarBoxes"
           onKeyUp={this.handleSearch.bind(this)}

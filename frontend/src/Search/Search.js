@@ -26,6 +26,17 @@ class SearchBar extends Component {
 
     this.handleName = this.handleName.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.refreshMeals = this.refreshMeals.bind(this);
+  }
+
+  async refreshMeals() {
+    this.setState({
+      meals: null
+    });
+    let meals = await TheMealDb.getRandomMeals(16);
+    this.setState({
+      meals: meals
+    });
   }
 
   async componentDidMount() {
@@ -40,7 +51,7 @@ class SearchBar extends Component {
       boxes = (
         await axios.get(`http://localhost:8081/boxes`, {
           params: {
-            ownerEmail: userEmail //TODO : pass here the email of the user
+            ownerEmail: userEmail
           }
         })
       ).data;
@@ -163,7 +174,8 @@ class SearchBar extends Component {
       <div className="container">
         <div className="container bg-faded py-3">
           <div className="row">
-            <div className="input-group mb-4 text-center">
+            <img src="./pinmeal.png" className="mx-auto pinMealImg" alt="..." />
+            <div className="input-group mb-4 text-center ">
               <input
                 type="search"
                 placeholder="What are you searching for?"
@@ -176,10 +188,16 @@ class SearchBar extends Component {
                 <button
                   id="button-addon6"
                   type="submit"
-                  className="btn btn-info searchButton"
+                  className="btn buttonSearchBar"
                   onClick={this.handleClick}
                 >
                   <i className="fa fa-search"></i>
+                </button>
+                <button
+                  className="btn btn-circle buttonRefreshMeals"
+                  onClick={this.refreshMeals}
+                >
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -219,6 +237,7 @@ class SearchBar extends Component {
             </div>
           </div>
         </div>
+
         {this.state.meals == null && DisplayMealUtils.displayLoadingDots()}
         {this.state.meals && this.renderResults()}
       </div>

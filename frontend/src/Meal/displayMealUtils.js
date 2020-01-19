@@ -139,7 +139,7 @@ export function AddInBoxModal(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Modal heading
+            Choose box...
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

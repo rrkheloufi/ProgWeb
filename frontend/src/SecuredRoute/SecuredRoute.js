@@ -10,7 +10,16 @@ function SecuredRoute(props) {
       path={path}
       render={props => {
         if (checkingSession)
-          return <h3 className="text-center">Validating session...</h3>;
+          return (
+            <div>
+              <h3 className="text-center">
+                Validating session{" "}
+                <div className="spinner-grow text-secondary" role="status" />
+                <div className="spinner-grow text-secondary" role="status" />
+                <div className="spinner-grow text-secondary" role="status" />
+              </h3>
+            </div>
+          );
         if (!auth0Client.isAuthenticated()) {
           auth0Client.signIn();
           return <div></div>;
