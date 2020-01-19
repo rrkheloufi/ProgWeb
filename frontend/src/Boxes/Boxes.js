@@ -4,18 +4,21 @@ import { Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import auth0Client from "../Auth";
+import * as TheMealDb from "../TheMealDB/TheMealDB";
+import * as DisplayMealUtils from "../Meal/displayMealUtils";
 
 class box extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      boxes: null
+      boxes: null,
+      loadingThumbnails: true
     };
   }
 
   async componentDidMount() {
     let userEmail = auth0Client.getProfile().email;
-    const boxes = (
+    let boxes = (
       await axios.get(`http://localhost:8081/boxes`, {
         params: {
           ownerEmail: userEmail
@@ -24,6 +27,26 @@ class box extends Component {
     ).data;
     this.setState({
       boxes
+    });
+    this.addImagesThumbnailsToBoxes(boxes);
+  }
+
+  async addImagesThumbnailsToBoxes(boxes) {
+    for (let i = 0; i < boxes.length; i++) {
+      let box = boxes[i];
+      let thumbnails = [];
+      for (let j = 0; j < box.mealsIds.length; j++) {
+        let id = box.mealsIds[j];
+        let meal = await TheMealDb.getMealById(id);
+        let img = meal.strMealThumb + "/preview";
+        thumbnails.push(img);
+        if (j == 3) break;
+      }
+      boxes[i].thumbnails = thumbnails;
+    }
+    this.setState({
+      boxes,
+      loadingThumbnails: false
     });
   }
 
@@ -51,8 +74,13 @@ class box extends Component {
   render() {
     return (
       <div className="container">
+        {this.state.loadingThumbnails === true && (
+          <div>
+            {DisplayMealUtils.displayLoadingDots()}
+            <br />
+          </div>
+        )}
         <div className="row">
-          {this.state.boxes === null && <p>Loading boxes...</p>}
           {this.state.boxes &&
             this.state.boxes.map(box => (
               <div
@@ -77,12 +105,19 @@ class box extends Component {
                       </button>
                     </div>
 
-                    <div className="card-body">
-                      <img
-                        className="card-img-top"
-                        src="https://cdn.shopify.com/s/files/1/0024/3879/1281/products/recipebook_1024x1024@2x.png?v=1540587935"
-                        alt="Recipe Img"
-                      />
+                    <div className="thumbnailContainer">
+                      <div className="container">
+                        <div className="row">
+                          {box.thumbnails &&
+                            box.thumbnails.map(img => (
+                              <img
+                                src={img}
+                                alt="thumbnail"
+                                className="col-6 boxThumbnail"
+                              ></img>
+                            ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Link>
