@@ -1,96 +1,154 @@
-//import dependencies
 const express = require("express");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const jwt = require("express-jwt");
-const jwksRsa = require("jwks-rsa");
+const Box = require("./database/models/box.model");
+const Comment = require("./database/models/comment.model");
+const MealStat = require("./database/models/mealstat.model");
 
-const authDomain = "dev-9faf5-o9.eu.auth0.com";
-const authClientId = "q618pz2fXtpYgmysdNzG0x9tkr1Ql2JS";
+var app = express();
+let port = 8081;
 
-// define the Express app
-const app = express();
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
-// the database
-const meals = [];
-// enhance your app security with Helmet
-app.use(helmet());
+var mongooseOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
-// use bodyParser to parse application/json content-type
+let databaseName = "progWeb";
+let url = "mongodb://localhost:27017/" + databaseName;
+mongoose.connect(url, mongooseOptions);
+
+const db = mongoose.connection;
+db.once("open", _ => {
+  console.log("Database connected:", url);
+});
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// enable all CORS requests
-app.use(cors());
-
-// log HTTP requests
-app.use(morgan("combined"));
-
-// retrieve all meals
-app.get("/", (req, res) => {
-  const qs = meals.map(meal => ({
-    id: meal.id,
-    title: meal.title,
-    description: meal.description,
-    answers: meal.answers.length
-  }));
-  res.send(qs);
+app.post("/box", async (request, response) => {
+  try {
+    var box = new Box(request.body);
+    var result = await box.save();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
 });
 
-// get a specific meal
-app.get("/:id", (req, res) => {
-  const meal = meals.filter(q => q.id === parseInt(req.params.id));
-  if (meal.length > 1) return res.status(500).send();
-  if (meal.length === 0) return res.status(404).send();
-  res.send(meal[0]);
+app.post("/comment", async (request, response) => {
+  try {
+    let comment = new Comment(request.body);
+    var result = await comment.save();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
 });
 
-const checkJwt = jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: "https://" + authDomain + "/.well-known/jwks.json"
-  }),
-
-  // Validate the audience and the issuer.
-  audience: authClientId,
-  issuer: "https://" + authDomain,
-  algorithms: ["RS256"]
+app.put("/stat/:mealId", async (request, response) => {
+  try {
+    var stat = await MealStat.findOne({ mealId: request.params.mealId }).exec();
+    if (stat) stat.set(request.body);
+    else stat = new MealStat(request.body);
+    var result = await stat.save();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
 });
 
-// insert a new meal
-app.post("/", checkJwt, (req, res) => {
-  const { title, description } = req.body;
-  const newmeal = {
-    id: meals.length + 1,
-    title,
-    description,
-    answers: [],
-    author: req.user.name
-  };
-  meals.push(newmeal);
-  res.status(200).send();
+app.get("/boxes", async (request, response) => {
+  try {
+    var result = await Box.find({
+      ownerEmail: request.query.ownerEmail
+    }).exec();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
 });
 
-// insert a new answer to a meal
-app.post("/answer/:id", checkJwt, (req, res) => {
-  const { answer } = req.body;
-
-  const meal = meals.filter(q => q.id === parseInt(req.params.id));
-  if (meal.length > 1) return res.status(500).send();
-  if (meal.length === 0) return res.status(404).send();
-
-  meal[0].answers.push({
-    answer,
-    author: req.user.name
-  });
-
-  res.status(200).send();
+app.get("/boxes/search", async (request, response) => {
+  try {
+    let search = request.query.search;
+    var result = await Box.find({
+      name: { $regex: new RegExp(".*" + search + ".*", "i") }
+    })
+      .limit(20)
+      .exec();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
 });
 
-// start the server
-app.listen(8081, () => {
-  console.log("listening on port 8081");
+app.get("/box/:id", async (request, response) => {
+  try {
+    var box = await Box.findById(request.params.id).exec();
+    response.send(box);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.get("/comments/:mId", async (request, response) => {
+  try {
+    let comments = await Comment.find({ mealId: request.params.mId })
+      .sort({ _id: -1 })
+      .exec();
+    response.send(comments);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.get("/mealStats/:mId", async (request, response) => {
+  try {
+    let mealStats = await MealStat.findOne({
+      mealId: request.params.mId
+    }).exec();
+    response.send(mealStats);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.put("/box/:id", async (request, response) => {
+  try {
+    var box = await Box.findById(request.params.id).exec();
+    box.set(request.body);
+    var result = await box.save();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.delete("/box/:id", async (request, response) => {
+  try {
+    var result = await Box.deleteOne({ _id: request.params.id }).exec();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.delete("/comment/:id", async (request, response) => {
+  try {
+    var result = await Comment.deleteOne({ _id: request.params.id }).exec();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.listen(port, () => {
+  console.log("Server is up and running on port number " + port);
 });
