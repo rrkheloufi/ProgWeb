@@ -41,8 +41,12 @@ class App extends Component {
         <NavBar />
         <Route exact path="/" component={SearchBar} />
         <Route exact path="/callback" component={Callback} />
+        <Route
+          path="/boxes/:userEmail"
+          component={Boxes}
+          checkingSession={this.state.checkingSession}
+        />
         <SecuredRoute
-          exact
           path="/boxes"
           component={Boxes}
           checkingSession={this.state.checkingSession}

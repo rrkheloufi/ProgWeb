@@ -6,18 +6,38 @@ import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import auth0Client from "../Auth";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 import * as DisplayMealUtils from "../Meal/displayMealUtils";
+import SearchBoxes from "./SearchBoxes";
 
-class box extends Component {
+class Boxes extends Component {
   constructor(props) {
     super(props);
     this.state = {
       boxes: null,
-      loadingThumbnails: true
+      loadingThumbnails: true,
+      allowModification: true
     };
   }
 
+  getEmailToDisplayBoxes() {
+    const {
+      match: { params }
+    } = this.props;
+    let allowModification = true;
+    let email;
+    if (params.userEmail) {
+      email = params.userEmail;
+      allowModification = false;
+    } else {
+      email = auth0Client.getProfile().email;
+    }
+    this.setState({
+      allowModification
+    });
+    return email;
+  }
+
   async componentDidMount() {
-    let userEmail = auth0Client.getProfile().email;
+    let userEmail = this.getEmailToDisplayBoxes();
     let boxes = (
       await axios.get(`http://localhost:8081/boxes`, {
         params: {
@@ -25,6 +45,7 @@ class box extends Component {
         }
       })
     ).data;
+
     this.setState({
       boxes
     });
@@ -40,7 +61,7 @@ class box extends Component {
         let meal = await TheMealDb.getMealById(id);
         let img = meal.strMealThumb + "/preview";
         thumbnails.push(img);
-        if (j == 3) break;
+        if (j === 3) break;
       }
       boxes[i].thumbnails = thumbnails;
     }
@@ -89,20 +110,28 @@ class box extends Component {
                 className="col-sm-12 col-md-4 col-lg-3"
               >
                 <Link to={`/box/${box._id}`}>
-                  <div className="card mb-3 boxCard">
+                  <div
+                    className={
+                      this.state.allowModification
+                        ? "card mb-3 boxCard"
+                        : "card mb-3 otherUserBoxCard"
+                    }
+                  >
                     <div className="card-header">
                       {box.name}
-                      <button
-                        type="button"
-                        className="close"
-                        data-dismiss="alert"
-                        onClick={() => {
-                          this.confirmSuppression(box._id, box.name);
-                        }}
-                      >
-                        <span aria-hidden="true">×</span>
-                        <span className="sr-only">Close</span>
-                      </button>
+                      {this.state.allowModification && (
+                        <button
+                          type="button"
+                          className="close"
+                          data-dismiss="alert"
+                          onClick={() => {
+                            this.confirmSuppression(box._id, box.name);
+                          }}
+                        >
+                          <span aria-hidden="true">×</span>
+                          <span className="sr-only">Close</span>
+                        </button>
+                      )}
                     </div>
 
                     <div className="thumbnailContainer">
@@ -111,6 +140,7 @@ class box extends Component {
                           {box.thumbnails &&
                             box.thumbnails.map(img => (
                               <img
+                                key={img}
                                 src={img}
                                 alt="thumbnail"
                                 className="col-6 boxThumbnail"
@@ -123,24 +153,27 @@ class box extends Component {
                 </Link>
               </div>
             ))}
-          <div key={box._id} className="col-sm-12 col-md-4 col-lg-3">
-            <Link to={`/boxes/create`}>
-              <div className="card mb-3 boxCard">
-                <div className="card-header">Create new box</div>
-                <div className="card-body">
-                  <img
-                    className="card-img-top"
-                    src="https://cdn4.iconfinder.com/data/icons/meBaze-Freebies/512/add.png"
-                    alt="Add Box Img"
-                  />
+          {this.state.allowModification && (
+            <div key="createBoxCard" className="col-sm-12 col-md-4 col-lg-3">
+              <Link to={`/boxes/create`}>
+                <div className="card mb-3 boxCard">
+                  <div className="card-header">Create new box</div>
+                  <div className="card-body">
+                    <img
+                      className="card-img-top"
+                      src="https://cdn4.iconfinder.com/data/icons/meBaze-Freebies/512/add.png"
+                      alt="Add Box Img"
+                    />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </div>
+              </Link>
+            </div>
+          )}
         </div>
+        <SearchBoxes />
       </div>
     );
   }
 }
 
-export default box;
+export default Boxes;

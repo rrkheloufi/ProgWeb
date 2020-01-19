@@ -33,11 +33,18 @@ code {
 
 .boxCard {
   transition: box-shadow 0.3s;
-  background-color: #ffeedb;
+  background-color: #fcd7ad;
   color: black;
 }
 
-.boxCard:hover {
+.otherUserBoxCard {
+  transition: box-shadow 0.3s;
+  background-color: white;
+  color: black;
+}
+
+.boxCard:hover,
+.otherUserBoxCard:hover {
   transform: scale(1.05);
 }
 
@@ -46,7 +53,12 @@ code {
   transition: box-shadow 0.3s;
 }
 
-.boxJumbotron:hover {
+.boxJumbotronOtherUser {
+  transition: box-shadow 0.3s;
+}
+
+.boxJumbotron:hover,
+.boxJumbotronOtherUser {
   box-shadow: 0 0 11px rgba(0, 0, 0, 0.2);
 }
 
@@ -100,6 +112,11 @@ code {
 .searchBar,
 .filter {
   border-color: dodgerblue;
+}
+
+.searchBarBoxes {
+  margin-top: 5%;
+  margin-bottom: 5%;
 }
 
 .filter {

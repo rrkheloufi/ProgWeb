@@ -51,6 +51,20 @@ app.get("/boxes", async (request, response) => {
   }
 });
 
+app.get("/boxes/search", async (request, response) => {
+  try {
+    let search = request.query.search;
+    var result = await Box.find({
+      name: { $regex: new RegExp(".*" + search + ".*", "i") }
+    })
+      .limit(20)
+      .exec();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
 app.get("/box/:id", async (request, response) => {
   try {
     var box = await Box.findById(request.params.id).exec();

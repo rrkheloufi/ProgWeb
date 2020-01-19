@@ -12,6 +12,11 @@ export function displayMealThumbnail(
   displayboxpagethumbnail,
   box
 ) {
+  let userEmail = auth0Client.getProfile().email;
+  let isUserOwner = !displayboxpagethumbnail; // isUserOwner est à faux quand on est dans une boite. Il est à vrai sinon.
+  if (box != null) {
+    isUserOwner = box.ownerEmail === userEmail;
+  }
   return (
     <div
       key={meal.idMeal}
@@ -19,7 +24,7 @@ export function displayMealThumbnail(
       className="col-sm-12 col-md-4 col-lg-3"
     >
       <div className="card meal showAddBoxButton">
-        {auth0Client.isAuthenticated() && (
+        {auth0Client.isAuthenticated() && isUserOwner && (
           <AddInBoxModal
             boxes={boxes}
             mealId={parseInt(meal.idMeal)}
@@ -75,10 +80,10 @@ export function AddInBoxModal(props) {
         }}
         className="btn btn-danger btn-circle btn-xl addInBoxButton"
       >
-        {props.displayboxpagethumbnail === true && (
+        {props.displayboxpagethumbnail && (
           <i className="fa fa-trash" aria-hidden="true"></i>
         )}
-        {props.displayboxpagethumbnail === false && (
+        {!props.displayboxpagethumbnail && (
           <i className="fa fa-plus" aria-hidden="true"></i>
         )}
       </Button>

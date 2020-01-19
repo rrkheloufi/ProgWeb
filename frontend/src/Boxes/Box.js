@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import * as TheMealDb from "../TheMealDB/TheMealDB";
 import * as DisplayMealUtils from "../Meal/displayMealUtils";
+import auth0Client from "../Auth";
 
 class Box extends Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class Box extends Component {
       box: null,
       meals: null,
       disabled: false,
-      id: null
+      id: null,
+      userIsOwner: false
     };
   }
 
@@ -23,34 +25,15 @@ class Box extends Component {
     } = this.props;
     const box = (await axios.get(`http://localhost:8081/box/${params.id}`))
       .data;
+    let userIsOwner = box.ownerEmail === auth0Client.getProfile().email;
     const id = params.id;
     const meals = await TheMealDb.getMealsByIds(box.mealsIds);
     this.setState({
       box,
       meals,
-      id
+      id,
+      userIsOwner
     });
-  }
-
-  async submit() {
-    this.setState({
-      disabled: true
-    });
-
-    await axios.post(
-      "http://localhost:8081/box",
-      {
-        name: this.state.boxName,
-        ownerEmail: this.state.ownerEmail,
-        mealsIds: [],
-        description: this.state.description
-      } /*,
-      {
-        headers: { Authorization: `Bearer ${auth0Client.getIdToken()}` }
-      }*/
-    );
-
-    this.props.history.push("/boxes");
   }
 
   render() {
@@ -58,14 +41,22 @@ class Box extends Component {
     if (box === null) return DisplayMealUtils.displayLoadingDots();
     return (
       <div className="container">
-        <div className="jumbotron boxJumbotron col-12">
+        <div
+          className={
+            this.state.userIsOwner
+              ? "jumbotron boxJumbotron col-12"
+              : "jumbotron boxJumbotronOtherUser col-12"
+          }
+        >
           <h1 className="my-2">
             {box.name}
-            <Link to={`/boxes/update/${box._id}`}>
-              <button className="btn btn-circle btn-xl buttonUpdateBox">
-                <i className="fa fa-pencil" aria-hidden="true"></i>
-              </button>
-            </Link>
+            {this.state.userIsOwner && (
+              <Link to={`/boxes/update/${box._id}`}>
+                <button className="btn btn-circle btn-xl buttonUpdateBox">
+                  <i className="fa fa-pencil" aria-hidden="true"></i>
+                </button>
+              </Link>
+            )}
           </h1>
           <p className="lead">{box.description}</p>
           <hr className="my-4" />

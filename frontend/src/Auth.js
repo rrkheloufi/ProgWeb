@@ -19,6 +19,7 @@ class Auth {
     this.isAuthenticated = this.isAuthenticated.bind(this);
     this.signIn = this.signIn.bind(this);
     this.signOut = this.signOut.bind(this);
+    this.SameSite = false;
   }
 
   getUserEmail() {
