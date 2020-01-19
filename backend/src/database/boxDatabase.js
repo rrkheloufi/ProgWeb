@@ -2,11 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const Box = require("../database/models/box.model");
+const Comment = require("../database/models/comment.model");
+const MealStat = require("./models/mealstat.model");
 
 var app = express();
 let port = 8081;
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
   res.header(
@@ -34,6 +36,31 @@ app.post("/box", async (request, response) => {
   try {
     var box = new Box(request.body);
     var result = await box.save();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.post("/comment", async (request, response) => {
+  try {
+    console.log("post comment");
+    let comment = new Comment(request.body);
+    var result = await comment.save();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.put("/stat/:mealId", async (request, response) => {
+  try {
+    var stat = await MealStat.findOne({ mealId: request.params.mealId }).exec();
+    if (stat) stat.set(request.body);
+    else stat = new MealStat(request.body);
+    var result = await stat.save();
+
+    console.log("stats result : " + result);
     response.send(result);
   } catch (error) {
     response.status(500).send(error);
@@ -74,6 +101,26 @@ app.get("/box/:id", async (request, response) => {
   }
 });
 
+app.get("/comments/:mId", async (request, response) => {
+  try {
+    let comments = await Comment.find({ mealId: request.params.mId }).sort({"_id": -1}).exec();
+    response.send(comments);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+
+app.get("/mealStats/:mId", async (request, response) => {
+  try {
+    let mealStats = await MealStat.findOne({ mealId: request.params.mId }).exec();
+    response.send(mealStats);
+    console.log("mealStats" + mealStats);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
 app.put("/box/:id", async (request, response) => {
   try {
     var box = await Box.findById(request.params.id).exec();
@@ -88,6 +135,15 @@ app.put("/box/:id", async (request, response) => {
 app.delete("/box/:id", async (request, response) => {
   try {
     var result = await Box.deleteOne({ _id: request.params.id }).exec();
+    response.send(result);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+app.delete("/comment/:id", async (request, response) => {
+  try {
+    var result = await Comment.deleteOne({ _id: request.params.id }).exec();
     response.send(result);
   } catch (error) {
     response.status(500).send(error);

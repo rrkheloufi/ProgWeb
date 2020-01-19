@@ -8,6 +8,17 @@ body {
   margin-top: 100px;
 }
 
+.comment-header{
+  background: #4c86a8;
+}
+
+.comment-card {
+  margin: 10px;
+}
+
+.del-comment-btn{
+  margin-right: 5px;
+}
 .navbar {
   background-color: indianred;
 }
