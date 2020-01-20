@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
 import ReactStarRating from "react-star-ratings-component";
 import axios from "axios";
 import auth0Client from "../Auth";
@@ -40,7 +39,6 @@ class Comments extends Component {
     }
 
     canDelete(comment) {
-        let elements = [];
         if (auth0Client.isAuthenticated()) {
             let userEmail = auth0Client.getProfile().name;
             if (userEmail === comment.ownerEmail)

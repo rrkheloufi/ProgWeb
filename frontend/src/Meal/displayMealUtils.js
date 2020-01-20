@@ -5,7 +5,6 @@ import Modal from "react-bootstrap/Modal";
 import { Link } from "react-router-dom";
 import * as BoxDB from "../Boxes/boxDbUtils";
 import auth0Client from "../Auth";
-import ReactStarRating from "react-star-ratings-component";
 
 export function displayMealThumbnail(
   meal,
@@ -67,47 +66,6 @@ export function displayLoadingDots() {
       <div className="spinner-grow text-primary" role="status" />
       <div className="spinner-grow text-primary" role="status" />
     </div>
-  );
-}
-
-export function AddComment(props) {
-  let rating = 5;
-  return (
-    <form>
-      <h5>
-        <em>Did you try this recipe? Tell us what you thought !</em>
-      </h5>
-      <ReactStarRating
-        numberOfStar={5}
-        numberOfSelectedStar={5}
-        colorFilledStar="orange"
-        colorEmptyStar="white"
-        starSize="30px"
-        spaceBetweenStar="5px"
-        disableOnSelect={false}
-        onSelectStar={val => {
-          rating = val;
-        }}
-      />
-
-      <div class="form-group">
-        <input class="form-control" id="title" placeholder="Title" required />
-      </div>
-      <div class="form-group">
-        <textarea
-          class="form-control"
-          id="description"
-          rows="3"
-          placeholder="Comment"
-        ></textarea>
-      </div>
-      <div class="form-group">
-        <input class="form-control" id="name" placeholder="Name" required />
-      </div>
-      <button type="submit" class="btn btn-primary mb-2">
-        Submit
-      </button>
-    </form>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as TheMealDb from "../TheMealDB/TheMealDB";
-import { AddInBoxModal, AddComment } from "../Meal/displayMealUtils";
+import { AddInBoxModal } from "../Meal/displayMealUtils";
 import Comments from "../Meal/Comments";
 import axios from "axios";
 import auth0Client from "../Auth";
@@ -30,13 +30,11 @@ class Meal extends Component {
       boxes = (
         await axios.get(`http://localhost:8081/boxes`, {
           params: {
-            ownerEmail: userEmail //TODO : pass here the email of the user
+            ownerEmail: userEmail 
           }
         })
       ).data;
     }
-   // let comments = (await axios.get(`http://localhost:8081/comments/` + params.mealId)).data;
-   // let mealStats = (await axios.get(`http://localhost:8081/mealStats/` + params.mealId)).data;
 
     this.setState({
       meal,
@@ -55,7 +53,7 @@ class Meal extends Component {
 
 
   render() {
-    const { meal, boxes, comments, mealStats } = this.state;
+    const { meal, boxes } = this.state;
     if (meal === null)
       return (
         <div className="spinners">
@@ -97,7 +95,7 @@ class Meal extends Component {
                       <tr>
                         <th scope="row">Youtube</th>
                         <td>
-                          <a href={meal.strYoutube} target="_blank">
+                          <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer">
                             {meal.strYoutube}
                           </a>
                         </td>
@@ -105,7 +103,7 @@ class Meal extends Component {
                       <tr>
                         <th scope="row">Source</th>
                         <td>
-                          <a href={meal.strSource} target="_blank">
+                          <a href={meal.strSource} target="_blank" rel="noopener noreferrer">
                             {meal.strSource}
                           </a>
                         </td>
@@ -127,23 +125,21 @@ class Meal extends Component {
             ingredient =>
               ingredient.ingredient && (
                 <div
-                  key={ingredient.ingredient}
+                  key={ingredient.ingredient + ingredient.quantity}
                   className="col-md-2 col-sm-4 mb-4"
                 >
                   <div className="card ingredient">
                     <div className="card-header">{ingredient.ingredient}</div>
                     <div className="card-body">
-                      <a href="#">
-                        <img
-                          className="img-fluid"
-                          src={
-                            "https://www.themealdb.com/images/ingredients/" +
-                            ingredient.ingredient +
-                            ".png"
-                          }
-                          alt=""
-                        />
-                      </a>
+                      <img
+                        className="img-fluid"
+                        src={
+                          "https://www.themealdb.com/images/ingredients/" +
+                          ingredient.ingredient +
+                          ".png"
+                        }
+                        alt=""
+                      />
                     </div>
                     <div className="card-footer">{ingredient.quantity}</div>
                   </div>
@@ -159,7 +155,7 @@ class Meal extends Component {
             })}
           </ul>
         </div>
-       <Comments mealId = {this.mealId}/>
+        <Comments mealId={this.mealId} />
       </div>
     );
   }

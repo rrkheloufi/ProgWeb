@@ -197,7 +197,7 @@ class SearchBar extends Component {
                   className="btn btn-circle buttonRefreshMeals"
                   onClick={this.refreshMeals}
                 >
-                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                  <i className="fa fa-refresh" aria-hidden="true"></i>
                 </button>
               </div>
             </div>

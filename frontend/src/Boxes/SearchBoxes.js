@@ -12,7 +12,7 @@ class Boxes extends Component {
       loadingThumbnails: false
     };
   }
-
+/*
   async componentDidMount() {
     let boxes = (
       await axios.get(`http://localhost:8081/boxes/search`, {
@@ -21,7 +21,7 @@ class Boxes extends Component {
         }
       })
     ).data;
-  }
+  }*/
 
   async handleSearch(event) {
     if (event.key === "Enter") {
