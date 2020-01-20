@@ -10,8 +10,8 @@ function NavBar(props) {
 
   return (
     <nav className="navbar fixed-top">
-      <Link to="/">
-        <img src="logo.png" className="img-fluid logo" alt="logo" />
+      <Link to="/" className="logo">
+        <img src="logo.png" className="img-fluid" alt="logo" />
       </Link>
 
       {!auth0Client.isAuthenticated() && (
