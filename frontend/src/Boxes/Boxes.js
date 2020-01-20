@@ -170,7 +170,7 @@ class Boxes extends Component {
             </div>
           )}
         </div>
-        <SearchBoxes />
+        {this.props.location.pathname === "/boxes" && <SearchBoxes />}
       </div>
     );
   }

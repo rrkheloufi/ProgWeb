@@ -30,7 +30,7 @@ class Meal extends Component {
       boxes = (
         await axios.get(`http://localhost:8081/boxes`, {
           params: {
-            ownerEmail: userEmail 
+            ownerEmail: userEmail
           }
         })
       ).data;
@@ -45,12 +45,19 @@ class Meal extends Component {
   renderStars(nbOfStars) {
     let elements = [];
     for (let i = 0; i < 5 - nbOfStars; i++)
-      elements.push(<span className="float-right"><i className="text-warning fa fa-star-o"></i></span>);
+      elements.push(
+        <span className="float-right">
+          <i className="text-warning fa fa-star-o"></i>
+        </span>
+      );
     for (let i = 0; i < nbOfStars; i++)
-      elements.push(<span className="float-right"><i className="text-warning fa fa-star"></i></span>);
+      elements.push(
+        <span className="float-right">
+          <i className="text-warning fa fa-star"></i>
+        </span>
+      );
     return elements;
   }
-
 
   render() {
     const { meal, boxes } = this.state;
@@ -76,8 +83,8 @@ class Meal extends Component {
                 {auth0Client.isAuthenticated() && (
                   <AddInBoxModal
                     boxes={boxes}
-                    mealId={meal.idMeal}
-                    displayBoxPageThumbnail={false}
+                    mealid={meal.idMeal}
+                    displayboxpagethumbnail={0}
                     box={null}
                   />
                 )}
@@ -95,7 +102,11 @@ class Meal extends Component {
                       <tr>
                         <th scope="row">Youtube</th>
                         <td>
-                          <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={meal.strYoutube}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {meal.strYoutube}
                           </a>
                         </td>
@@ -103,7 +114,11 @@ class Meal extends Component {
                       <tr>
                         <th scope="row">Source</th>
                         <td>
-                          <a href={meal.strSource} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={meal.strSource}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {meal.strSource}
                           </a>
                         </td>

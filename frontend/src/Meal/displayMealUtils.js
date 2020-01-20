@@ -32,8 +32,8 @@ export function displayMealThumbnail(
         {auth0Client.isAuthenticated() && isUserOwner && (
           <AddInBoxModal
             boxes={boxes}
-            mealId={parseInt(meal.idMeal)}
-            displayboxpagethumbnail={displayboxpagethumbnail}
+            mealid={parseInt(meal.idMeal)}
+            displayboxpagethumbnail={displayboxpagethumbnail ? 1 : 0}
             box={box}
           />
         )}
@@ -71,24 +71,26 @@ export function displayLoadingDots() {
 
 export function AddInBoxModal(props) {
   const [smShow, setSmShow] = useState(false);
+  let displayboxpagethumbnail =
+    props.displayboxpagethumbnail === 1 ? true : false;
   return (
     <ButtonToolbar>
       <Button
         type="button"
         onClick={() => {
-          if (props.displayboxpagethumbnail === true) {
-            BoxDB.removeMealFromBox(props.box, props.mealId);
-            document.getElementById(props.mealId).remove();
+          if (displayboxpagethumbnail) {
+            BoxDB.removeMealFromBox(props.box, props.mealid);
+            document.getElementById(props.mealid).remove();
           } else {
             setSmShow(true);
           }
         }}
         className="btn btn-danger btn-circle btn-xl addInBoxButton"
       >
-        {props.displayboxpagethumbnail && (
+        {displayboxpagethumbnail && (
           <i className="fa fa-trash" aria-hidden="true"></i>
         )}
-        {!props.displayboxpagethumbnail && (
+        {!displayboxpagethumbnail && (
           <i className="fa fa-plus" aria-hidden="true"></i>
         )}
       </Button>
@@ -108,7 +110,7 @@ export function AddInBoxModal(props) {
         <Modal.Body>
           <ul className="list-group">
             {props.boxes &&
-              props.boxes.map(box => boxListItem(box, props.mealId))}
+              props.boxes.map(box => boxListItem(box, props.mealid))}
           </ul>
         </Modal.Body>
       </Modal>

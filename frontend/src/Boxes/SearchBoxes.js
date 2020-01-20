@@ -12,16 +12,6 @@ class Boxes extends Component {
       loadingThumbnails: false
     };
   }
-/*
-  async componentDidMount() {
-    let boxes = (
-      await axios.get(`http://localhost:8081/boxes/search`, {
-        params: {
-          search: "ef"
-        }
-      })
-    ).data;
-  }*/
 
   async handleSearch(event) {
     if (event.key === "Enter") {
@@ -60,7 +50,6 @@ class Boxes extends Component {
       }
       boxes[i].thumbnails = thumbnails;
     }
-    console.log(boxes);
     this.setState({
       boxes,
       loadingThumbnails: false

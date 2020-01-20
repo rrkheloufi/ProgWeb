@@ -46,11 +46,7 @@ class App extends Component {
           component={Boxes}
           checkingSession={this.state.checkingSession}
         />
-        <SecuredRoute
-          path="/boxes"
-          component={Boxes}
-          checkingSession={this.state.checkingSession}
-        />
+
         <SecuredRoute
           exact
           path="/box/:id"
@@ -67,6 +63,12 @@ class App extends Component {
           exact
           path="/boxes/update/:boxId"
           component={UpdateBox}
+          checkingSession={this.state.checkingSession}
+        />
+        <SecuredRoute
+          exact
+          path="/boxes"
+          component={Boxes}
           checkingSession={this.state.checkingSession}
         />
         <Route exact path="/meal/:mealId" component={Meal} />
