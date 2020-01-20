@@ -10,7 +10,9 @@
   "scripts": {
     "database": "node backend/src/index.js",
     "frontend": "npm start --prefix frontend",
-    "install": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "installServer": "cd backend && npm install",
+    "installFront": "cd frontend && npm install",
+    "postinstall": "concurrently \"npm run installServer --verbose\" \"npm run installFront --verbose\"",
     "dev": "concurrently \"npm run database\" \"npm run frontend\""
   },
   "keywords": [],
