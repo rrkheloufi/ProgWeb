@@ -5,6 +5,7 @@
 #### Prérequis :
 
 - npm
+- mongodb
 
 #### Commandes :
 
